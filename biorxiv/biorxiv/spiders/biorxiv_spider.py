@@ -5,7 +5,7 @@ import re
 class BiorxivSpider(Spider):
     name='biorxiv_spider'
     start_urls=['https://www.biorxiv.org/collection/cancer-biology?page=0']
-    allowed_urls=['https://www.biorxiv.org']
+    allowed_urls=['https://www.biorxiv.']
 
     def parse(self,response):
         num_pages = int(response.xpath('//li[@class="pager-last last odd"]/a/text()').extract_first())
@@ -24,10 +24,16 @@ class BiorxivSpider(Spider):
 
     def parse_paperpage(self,response):
         title = response.xpath('//h1[@class="highwire-cite-title"]/text()').extract()
-        # print('='*55)
-        # print(title)
-        # print('='*55)
         subject_area = response.xpath('//span[@class="highwire-article-collection-term"]/a/text()').extract()
         doi = response.xpath('//span[@class="highwire-cite-metadata-doi highwire-cite-metadata"]/text()').extract_first()
         date_posted = response.xpath('//div[@class="panel-pane pane-custom pane-1"]/div/text()').extract()
+        meta = {'title':title,'subject_area':subject_area,'doi':doi,'date_posted':date_posted}
+
+        article_info_url = response.url+'.article-info'
+        yield Request(url=article_info_url,callback=self.parse_infopage,meta=meta)
+
+    def parse_infopage(self,response):
+        author_names = response.xpath('//ol[@class="contributor-list"]/li/span[@class="name"]/text()').extract()
+        affiliation_nums = response.xpath('//ol[@class="contributor-list"]/li/a/text()').extract()
+        affiliation_text = response.xpath('//ol[@class="affiliation-list"]/li/address/text()').extract()
         
