@@ -37,6 +37,7 @@ class BiorxivSpider(Spider):
         affiliation_nums = response.xpath('//ol[@class="contributor-list"]/li/a/text()').extract()
         affiliation_text = response.xpath('//ol[@class="affiliation-list"]/li/address/text()').extract()
         meta = {'author_names':author_names,'affiliation_nums':affiliation_nums,'affiliation_text':affiliation_text}
+        meta.update(response.meta)
 
         metric_url = response.url.split('.article-info')
         metric_url = metric_url[0]+'.article-metrics'
