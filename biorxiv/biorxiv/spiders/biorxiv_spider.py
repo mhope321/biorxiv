@@ -23,4 +23,7 @@ class BiorxivSpider(Spider):
             yield Request(url=url,callback=self.parse_paperpage)
 
     def parse_paperpage(self,response):
-        
+        title = response.xpath('//h1[@class="highwire-cite-title"]/text()').extract()
+        print('='*55)
+        print(title)
+        print('='*55)
