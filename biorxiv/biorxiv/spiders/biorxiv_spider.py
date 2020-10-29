@@ -12,14 +12,14 @@ class BiorxivSpider(Spider):
         url_list = [f'https://www.biorxiv.org/collection/cancer-biology?page={i}'
         for i in range(num_pages)]
 
-        for url in url_list[:2]:
+        for url in url_list:
             yield Request(url=url,callback=self.parse_resultpage)
 
     def parse_resultpage(self,response):
         papers = response.xpath('//a[@class="highwire-cite-linked-title"]/@href').extract()
         papers_url = [f'https://www.biorxiv.org{suffix}' for suffix in papers]
 
-        for url in papers_url[:2]:
+        for url in papers_url:
             yield Request(url=url,callback=self.parse_paperpage)
 
     def parse_paperpage(self,response):
