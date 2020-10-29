@@ -12,6 +12,7 @@ class BiorxivItem(scrapy.Item):
     paper_title = scrapy.Field()
     doi = scrapy.Field()
     date_posted = scrapy.Field()
+    subject_area = scrapy.Field()
     authors = scrapy.Field()
     number_of_tweets = scrapy.Field()
     number_of_comments = scrapy.Field()

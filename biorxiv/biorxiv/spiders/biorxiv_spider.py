@@ -24,6 +24,10 @@ class BiorxivSpider(Spider):
 
     def parse_paperpage(self,response):
         title = response.xpath('//h1[@class="highwire-cite-title"]/text()').extract()
-        print('='*55)
-        print(title)
-        print('='*55)
+        # print('='*55)
+        # print(title)
+        # print('='*55)
+        subject_area = response.xpath('//span[@class="highwire-article-collection-term"]/a/text()').extract()
+        doi = response.xpath('//span[@class="highwire-cite-metadata-doi highwire-cite-metadata"]/text()').extract_first()
+        date_posted = response.xpath('//div[@class="panel-pane pane-custom pane-1"]/div/text()').extract()
+        
