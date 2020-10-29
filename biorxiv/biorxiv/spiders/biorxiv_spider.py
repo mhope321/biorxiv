@@ -23,11 +23,11 @@ class BiorxivSpider(Spider):
             yield Request(url=url,callback=self.parse_paperpage)
 
     def parse_paperpage(self,response):
-        title = response.xpath('//h1[@class="highwire-cite-title"]/text()').extract()
+        paper_title = response.xpath('//h1[@class="highwire-cite-title"]/text()').extract()
         subject_area = response.xpath('//span[@class="highwire-article-collection-term"]/a/text()').extract()
         doi = response.xpath('//span[@class="highwire-cite-metadata-doi highwire-cite-metadata"]/text()').extract_first()
         date_posted = response.xpath('//div[@class="panel-pane pane-custom pane-1"]/div/text()').extract()
-        meta = {'title':title,'subject_area':subject_area,'doi':doi,'date_posted':date_posted}
+        meta = {'paper_title':paper_title,'subject_area':subject_area,'doi':doi,'date_posted':date_posted}
 
         article_info_url = response.url+'.article-info'
         yield Request(url=article_info_url,callback=self.parse_infopage,meta=meta)
@@ -36,4 +36,22 @@ class BiorxivSpider(Spider):
         author_names = response.xpath('//ol[@class="contributor-list"]/li/span[@class="name"]/text()').extract()
         affiliation_nums = response.xpath('//ol[@class="contributor-list"]/li/a/text()').extract()
         affiliation_text = response.xpath('//ol[@class="affiliation-list"]/li/address/text()').extract()
-        
+        meta = {'author_names':author_names,'affiliation_nums':affiliation_nums,'affiliation_text':affiliation_text}
+
+        metric_url = response.url.split('.article-info')
+        metric_url = metric_url[0]+'.article-metrics'
+        yield Request(url=metric_url,callback=self.parse_metricpage,meta=meta)
+
+    def parse_metricpage(self,response):
+        downloads = response.xpath('//tbody/tr').extract()
+
+        item = BiorxivItem()
+        item['paper_title'] = response.meta['paper_title']
+        item['doi'] = response.meta['doi']
+        item['date_posted'] = response.meta['date_posted']
+        item['subject_area'] = response.meta['subject_area']
+        item['author_names'] = response.meta['author_names']
+        item['affiliation_nums'] = response.meta['affiliation_nums']
+        item['affiliation_text'] = response.meta['affiliation_text']
+        item['downloads'] = downloads
+        yield item

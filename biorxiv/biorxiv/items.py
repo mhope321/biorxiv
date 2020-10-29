@@ -16,6 +16,4 @@ class BiorxivItem(scrapy.Item):
     author_names = scrapy.Field()
     affiliation_nums = scrapy.Field()
     affiliation_text = scrapy.Field()
-    number_of_tweets = scrapy.Field()
-    number_of_comments = scrapy.Field()
-    number_of_downloads = scrapy.Field()
+    downloads = scrapy.Field()
