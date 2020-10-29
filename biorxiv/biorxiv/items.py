@@ -9,4 +9,10 @@ import scrapy
 class BiorxivItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    pass
+    paper_title = scrapy.Field()
+    doi = scrapy.Field()
+    date_posted = scrapy.Field()
+    authors = scrapy.Field()
+    number_of_tweets = scrapy.Field()
+    number_of_comments = scrapy.Field()
+    number_of_downloads = scrapy.Field()
