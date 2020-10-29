@@ -11,3 +11,16 @@ class BiorxivSpider(Spider):
         num_pages = int(response.xpath('//li[@class="pager-last last odd"]/a/text()').extract_first())
         url_list = [f'https://www.biorxiv.org/collection/cancer-biology?page={i}'
         for i in range(num_pages)]
+
+        for url in url_list[:2]:
+            yield Request(url=url,callback=self.parse_resultpage)
+
+    def parse_resultpage(self,response):
+        papers = response.xpath('//a[@class="highwire-cite-linked-title"]/@href').extract()
+        papers_url = [f'https://www.biorxiv.org{suffix}' for suffix in papers]
+
+        for url in papers_url[:2]:
+            yield Request(url=url,callback=self.parse_paperpage)
+
+    def parse_paperpage(self,response):
+        
